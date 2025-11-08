@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LAWN2SNOW - Staff Registration</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #0a0a0f 0%, #0f1520 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: linear-gradient(135deg, rgba(10, 10, 15, 0.98) 0%, rgba(26, 47, 26, 0.98) 100%);
+            border: 1px solid rgba(111, 207, 63, 0.3);
+            border-radius: 12px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 166, 81, 0.3);
+        }
+
+        .logo {
+            text-align: center;
+            font-size: 32px;
+            color: #6fcf3f;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #a0a0b0;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: white;
+            font-weight: 500;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid rgba(111, 207, 63, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            font-size: 16px;
+            color: white;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #6fcf3f;
+            background: rgba(111, 207, 63, 0.05);
+        }
+
+        select option {
+            background: #1a1a2e;
+            color: white;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00a651, #6fcf3f);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            box-shadow: 0 5px 20px rgba(111, 207, 63, 0.4);
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links a {
+            color: #6fcf3f;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .links a:hover {
+            text-decoration: underline;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            display: none;
+        }
+
+        .message.success {
+            background: rgba(0, 166, 81, 0.2);
+            color: #00ff88;
+            border: 1px solid #00a651;
+            display: block;
+        }
+
+        .message.error {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+            border: 1px solid #e74c3c;
+            display: block;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #6fcf3f;
+            margin-top: 10px;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+        }
+
+        .step {
+            flex: 1;
+            text-align: center;
+            padding: 10px;
+            position: relative;
+        }
+
+        .step::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            right: -50%;
+            width: 100%;
+            height: 2px;
+            background: rgba(111, 207, 63, 0.2);
+            transform: translateY(-50%);
+        }
+
+        .step:last-child::after {
+            display: none;
+        }
+
+        .step.active .step-number {
+            background: linear-gradient(135deg, #00a651, #6fcf3f);
+            color: white;
+        }
+
+        .step.completed .step-number {
+            background: #00a651;
+            color: white;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #a0a0b0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 5px;
+            font-weight: bold;
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: #a0a0b0;
+        }
+
+        .form-section {
+            display: none;
+        }
+
+        .form-section.active {
+            display: block;
+        }
+
+        .service-type {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .service-option {
+            flex: 1;
+            padding: 15px;
+            border: 2px solid rgba(111, 207, 63, 0.2);
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .service-option:hover {
+            border-color: #6fcf3f;
+            background: rgba(111, 207, 63, 0.1);
+        }
+
+        .service-option.selected {
+            border-color: #6fcf3f;
+            background: rgba(111, 207, 63, 0.2);
+        }
+
+        .service-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="register-container">
+        <h1 class="logo">🚀 LAWN2SNOW</h1>
+        <p class="subtitle">Create Your Staff Account</p>
+
+        <div class="progress-steps">
+            <div class="step active" id="step1">
+                <div class="step-number">1</div>
+                <div class="step-label">Basic Info</div>
+            </div>
+            <div class="step" id="step2">
+                <div class="step-number">2</div>
+                <div class="step-label">Services</div>
+            </div>
+            <div class="step" id="step3">
+                <div class="step-number">3</div>
+                <div class="step-label">Account</div>
+            </div>
+        </div>
+
+        <div id="message" class="message"></div>
+
+        <form id="registrationForm">
+            <!-- Step 1: Basic Information -->
+            <div class="form-section active" id="section1">
+                <div class="form-group">
+                    <label for="name">Full Name *</label>
+                    <input type="text" id="name" name="name" required placeholder="John Doe">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address *</label>
+                    <input type="email" id="email" name="email" required placeholder="john@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number *</label>
+                    <input type="tel" id="phone" name="phone" required placeholder="403-555-0000">
+                </div>
+
+                <div class="form-group">
+                    <label for="address">Address *</label>
+                    <input type="text" id="address" name="address" required placeholder="123 Main St, Calgary, AB">
+                </div>
+
+                <button type="button" onclick="nextStep(1)">Next Step →</button>
+            </div>
+
+            <!-- Step 2: Service Information -->
+            <div class="form-section" id="section2">
+                <div class="form-group">
+                    <label>Primary Service Type *</label>
+                    <div class="service-type">
+                        <div class="service-option" onclick="selectService('snow')" id="snow-service">
+                            <div class="service-icon">❄️</div>
+                            <div>Snow Services</div>
+                        </div>
+                        <div class="service-option" onclick="selectService('lawn')" id="lawn-service">
+                            <div class="service-icon">🌿</div>
+                            <div>Lawn Care</div>
+                        </div>
+                        <div class="service-option" onclick="selectService('both')" id="both-service">
+                            <div class="service-icon">🚀</div>
+                            <div>Both</div>
+                        </div>
+                    </div>
+                    <input type="hidden" id="serviceType" name="serviceType" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="vehicleType">Vehicle Type *</label>
+                    <select id="vehicleType" name="vehicleType" required>
+                        <option value="">Select vehicle type</option>
+                        <option value="pickup">Pickup Truck</option>
+                        <option value="van">Van</option>
+                        <option value="suv">SUV</option>
+                        <option value="car">Car</option>
+                        <option value="none">No vehicle yet</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="experience">Years of Experience</label>
+                    <select id="experience" name="experience">
+                        <option value="0">No experience</option>
+                        <option value="1">Less than 1 year</option>
+                        <option value="2">1-2 years</option>
+                        <option value="3">3-5 years</option>
+                        <option value="5">5+ years</option>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep(2)">← Back</button>
+                    <button type="button" onclick="nextStep(2)">Next Step →</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Account Setup -->
+            <div class="form-section" id="section3">
+                <div class="form-group">
+                    <label for="password">Password * (minimum 8 characters)</label>
+                    <input type="password" id="password" name="password" required minlength="8">
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password *</label>
+                    <input type="password" id="confirmPassword" name="confirmPassword" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="referralSource">How did you hear about us?</label>
+                    <select id="referralSource" name="referralSource">
+                        <option value="">Select an option</option>
+                        <option value="online">Online Search</option>
+                        <option value="social">Social Media</option>
+                        <option value="friend">Friend/Referral</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn-secondary" onclick="prevStep(3)">← Back</button>
+                    <button type="submit" id="submitBtn">Complete Registration</button>
+                </div>
+
+                <div class="loading" id="loading">Processing registration...</div>
+            </div>
+        </form>
+
+        <div class="links">
+            <a href="/staff">Already have an account? Sign In</a>
+            <br><br>
+            <a href="/">← Back to Home</a>
+        </div>
+    </div>
+
+    <script>
+        let currentStep = 1;
+        let selectedService = '';
+
+        function selectService(service) {
+            // Remove selected class from all
+            document.querySelectorAll('.service-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+
+            // Add selected class to clicked option
+            document.getElementById(`${service}-service`).classList.add('selected');
+            selectedService = service;
+            document.getElementById('serviceType').value = service;
+        }
+
+        function nextStep(step) {
+            // Validate current step
+            if (step === 1) {
+                const name = document.getElementById('name').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const address = document.getElementById('address').value.trim();
+
+                if (!name || !email || !phone || !address) {
+                    showMessage('Please fill in all required fields', 'error');
+                    return;
+                }
+
+                if (!email.includes('@')) {
+                    showMessage('Please enter a valid email address', 'error');
+                    return;
+                }
+            } else if (step === 2) {
+                if (!selectedService) {
+                    showMessage('Please select a service type', 'error');
+                    return;
+                }
+
+                const vehicleType = document.getElementById('vehicleType').value;
+                if (!vehicleType) {
+                    showMessage('Please select a vehicle type', 'error');
+                    return;
+                }
+            }
+
+            // Hide current section
+            document.getElementById(`section${step}`).classList.remove('active');
+            document.getElementById(`step${step}`).classList.remove('active');
+            document.getElementById(`step${step}`).classList.add('completed');
+
+            // Show next section
+            currentStep = step + 1;
+            document.getElementById(`section${currentStep}`).classList.add('active');
+            document.getElementById(`step${currentStep}`).classList.add('active');
+
+            // Clear any messages
+            document.getElementById('message').className = 'message';
+        }
+
+        function prevStep(step) {
+            // Hide current section
+            document.getElementById(`section${step}`).classList.remove('active');
+            document.getElementById(`step${step}`).classList.remove('active');
+
+            // Show previous section
+            currentStep = step - 1;
+            document.getElementById(`section${currentStep}`).classList.add('active');
+            document.getElementById(`step${currentStep}`).classList.add('active');
+            document.getElementById(`step${currentStep}`).classList.remove('completed');
+        }
+
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.getElementById('registrationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const submitBtn = document.getElementById('submitBtn');
+            const loading = document.getElementById('loading');
+            const messageDiv = document.getElementById('message');
+
+            // Get all form data
+            const formData = {
+                // Basic Info
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim().toLowerCase(),
+                phone: document.getElementById('phone').value.replace(/[^0-9]/g, ''),
+                address: document.getElementById('address').value.trim(),
+
+                // Service Info
+                serviceType: document.getElementById('serviceType').value,
+                vehicleType: document.getElementById('vehicleType').value,
+                experience: document.getElementById('experience').value,
+
+                // Account Info
+                password: document.getElementById('password').value,
+                referralSource: document.getElementById('referralSource').value,
+
+                // Additional fields for Google Sheets
+                registrationDate: new Date().toISOString(),
+                status: 'Pending Approval',
+                profileCompletion: 25, // Initial completion percentage
+                documentsStatus: 'Pending',
+                equipmentAssigned: false,
+                onboardingStage: 'Registered'
+            };
+
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            // Validate passwords match
+            if (formData.password !== confirmPassword) {
+                showMessage('Passwords do not match', 'error');
+                return;
+            }
+
+            // Validate password length
+            if (formData.password.length < 8) {
+                showMessage('Password must be at least 8 characters', 'error');
+                return;
+            }
+
+            // Show loading
+            submitBtn.disabled = true;
+            loading.classList.add('show');
+            messageDiv.className = 'message';
+
+            try {
+                console.log('Submitting registration data:', formData);
+
+                // Submit to N8N webhook which will:
+                // 1. Create the staff account
+                // 2. Generate unique Staff ID
+                // 3. Update multiple Google Sheets:
+                //    - Staff Master Sheet
+                //    - Onboarding Tracker
+                //    - Equipment Assignment
+                //    - Documents Tracker
+                //    - Earnings/Payroll Sheet
+                const response = await fetch('https://lawn2snow.app.n8n.cloud/webhook/l2s-staff-register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    mode: 'cors',
+                    body: JSON.stringify(formData)
+                });
+
+                console.log('Response status:', response.status);
+
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status}`);
+                }
+
+                const result = await response.json();
+                console.log('Registration result:', result);
+
+                if (result.success) {
+                    messageDiv.className = 'message success';
+                    messageDiv.innerHTML = `
+                        <h3 style="margin-bottom: 10px;">✅ Registration Successful!</h3>
+                        <p style="font-size: 18px; margin-bottom: 10px;">Your Staff ID is: <strong style="font-size: 24px; color: #00ff88;">${result.staffId}</strong></p>
+                        <p style="margin-bottom: 10px;">Please save this ID - you'll need it to login.</p>
+                        <p style="font-size: 14px; color: #a0a0b0;">You've been added to our system. Complete your profile after logging in to start earning!</p>
+                        <p style="margin-top: 15px;">Redirecting to login page in 10 seconds...</p>
+                    `;
+
+                    // Clear form
+                    document.getElementById('registrationForm').reset();
+
+                    // Redirect after 10 seconds to staff portal
+                    setTimeout(() => {
+                        window.location.href = '/staff';
+                    }, 10000);
+                } else {
+                    messageDiv.className = 'message error';
+                    messageDiv.textContent = result.message || 'Registration failed. Please try again.';
+                    submitBtn.disabled = false;
+                }
+            } catch (error) {
+                console.error('Registration error:', error);
+
+                messageDiv.className = 'message error';
+
+                if (error.message.includes('Failed to fetch')) {
+                    messageDiv.textContent = 'Cannot connect to server. Please check if the service is available.';
+                } else if (error.message.includes('404')) {
+                    messageDiv.textContent = 'Registration service not found. Please contact support.';
+                } else if (error.message.includes('500')) {
+                    messageDiv.textContent = 'Server error. Please try again later.';
+                } else {
+                    messageDiv.textContent = `Error: ${error.message}`;
+                }
+
+                submitBtn.disabled = false;
+            } finally {
+                loading.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
