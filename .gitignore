@@ -1,0 +1,63 @@
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Hardhat files
+smart-contracts/cache/
+smart-contracts/artifacts/
+smart-contracts/deployments/
+coverage/
+coverage.json
+typechain/
+typechain-types/
+
+# Testing
+.coverage_artifacts/
+.coverage_cache/
+.coverage_contracts/
+
+# Build files
+dist/
+build/
+*.log
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Unity
+unity-client/[Ll]ibrary/
+unity-client/[Tt]emp/
+unity-client/[Oo]bj/
+unity-client/[Bb]uild/
+unity-client/[Bb]uilds/
+unity-client/[Ll]ogs/
+unity-client/[Uu]ser[Ss]ettings/
+*.pidb.meta
+*.pdb.meta
+*.mdb.meta
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Secrets (NEVER commit these!)
+*private_key*
+*secret*
+*credential*
+wallet.json
+keystore/

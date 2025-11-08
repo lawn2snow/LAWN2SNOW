@@ -63,10 +63,9 @@ app.get('/', (req, res) => {
   });
 });
 
-// Import routes (to be created)
-// app.use('/api/auth', require('./routes/auth'));
-// app.use('/api/player', require('./routes/player'));
-// app.use('/api/missions', require('./routes/missions'));
+// Import routes
+app.use('/api/player', require('./routes/player'));
+app.use('/api/missions', require('./routes/missions'));
 // app.use('/api/pvp', require('./routes/pvp'));
 // app.use('/api/blockchain', require('./routes/blockchain'));
 // app.use('/api/marketplace', require('./routes/marketplace'));

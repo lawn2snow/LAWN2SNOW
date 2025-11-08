@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Caribbean Crypto GTA - Test Interface</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 16px;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 24px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 14px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .result.success {
+            background: #d4edda;
+            color: #155724;
+            border: 2px solid #c3e6cb;
+        }
+
+        .result.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 2px solid #f5c6cb;
+        }
+
+        .result pre {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(0,0,0,0.05);
+            border-radius: 5px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .stat-item {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .island-selector {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .island-btn {
+            padding: 10px;
+            background: #f0f0f0;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 12px;
+        }
+
+        .island-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .mission-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .mission-item {
+            background: #f8f9fa;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .mission-item h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .mission-item p {
+            color: #666;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
+        .mission-item button {
+            margin-top: 10px;
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1>🏝️ Caribbean Crypto GTA - Test Interface</h1>
+            <p>Development Testing Dashboard for Backend API</p>
+            <p style="margin-top: 10px; font-size: 14px; color: #999;">
+                API Endpoint: <span id="apiUrl">http://localhost:3000</span>
+            </p>
+        </div>
+
+        <!-- Player Management -->
+        <div class="grid">
+            <!-- Register Player -->
+            <div class="card">
+                <h2>👤 Register Player</h2>
+                <div class="form-group">
+                    <label>Wallet Address</label>
+                    <input type="text" id="regWallet" placeholder="0x..." value="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1">
+                </div>
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="regUsername" placeholder="Username" value="Player1">
+                </div>
+                <div class="form-group">
+                    <label>Email (optional)</label>
+                    <input type="email" id="regEmail" placeholder="player@example.com">
+                </div>
+                <button onclick="registerPlayer()">Register Player</button>
+                <div id="registerResult" class="result" style="display:none;"></div>
+            </div>
+
+            <!-- Get Player Profile -->
+            <div class="card">
+                <h2>🎮 Get Player Profile</h2>
+                <div class="form-group">
+                    <label>Wallet Address</label>
+                    <input type="text" id="getWallet" placeholder="0x..." value="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1">
+                </div>
+                <button onclick="getPlayer()">Get Profile</button>
+                <div id="profileResult" class="result" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- Game Actions -->
+        <div class="grid">
+            <!-- Add Experience -->
+            <div class="card">
+                <h2>⭐ Add Experience</h2>
+                <div class="form-group">
+                    <label>Wallet Address</label>
+                    <input type="text" id="expWallet" value="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1">
+                </div>
+                <div class="form-group">
+                    <label>Experience Points</label>
+                    <input type="number" id="expAmount" value="500">
+                </div>
+                <button onclick="addExperience()">Add Experience</button>
+                <div id="expResult" class="result" style="display:none;"></div>
+            </div>
+
+            <!-- Unlock Island -->
+            <div class="card">
+                <h2>🏝️ Unlock Island</h2>
+                <div class="form-group">
+                    <label>Wallet Address</label>
+                    <input type="text" id="islandWallet" value="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1">
+                </div>
+                <div class="form-group">
+                    <label>Select Island</label>
+                    <select id="islandSelect">
+                        <option value="Bahamas">Bahamas</option>
+                        <option value="Puerto Rico">Puerto Rico</option>
+                        <option value="Trinidad">Trinidad</option>
+                        <option value="Cayman Islands">Cayman Islands</option>
+                        <option value="Barbados">Barbados</option>
+                        <option value="Dominican Republic">Dominican Republic</option>
+                    </select>
+                </div>
+                <button onclick="unlockIsland()">Unlock Island</button>
+                <div id="islandResult" class="result" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- Missions -->
+        <div class="grid">
+            <!-- Browse Missions -->
+            <div class="card">
+                <h2>📋 Browse Missions</h2>
+                <div class="form-group">
+                    <label>Filter by Island</label>
+                    <select id="missionIsland">
+                        <option value="">All Islands</option>
+                        <option value="Jamaica">Jamaica</option>
+                        <option value="Bahamas">Bahamas</option>
+                        <option value="Puerto Rico">Puerto Rico</option>
+                    </select>
+                </div>
+                <button onclick="getMissions()">Load Missions</button>
+                <div id="missionsResult" class="result" style="display:none;"></div>
+            </div>
+
+            <!-- Available Missions for Player -->
+            <div class="card">
+                <h2>✅ Available Missions</h2>
+                <div class="form-group">
+                    <label>Wallet Address</label>
+                    <input type="text" id="availWallet" value="0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb1">
+                </div>
+                <button onclick="getAvailableMissions()">Get My Missions</button>
+                <div id="availResult" class="result" style="display:none;"></div>
+            </div>
+        </div>
+
+        <!-- Leaderboard -->
+        <div class="card">
+            <h2>🏆 Leaderboard</h2>
+            <div class="form-group">
+                <label>Leaderboard Type</label>
+                <select id="leaderType">
+                    <option value="level">By Level</option>
+                    <option value="reputation">By Reputation</option>
+                    <option value="pvp">By PvP Wins</option>
+                </select>
+            </div>
+            <button onclick="getLeaderboard()">Load Leaderboard</button>
+            <div id="leaderResult" class="result" style="display:none;"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api';
+
+        // Register Player
+        async function registerPlayer() {
+            const wallet = document.getElementById('regWallet').value;
+            const username = document.getElementById('regUsername').value;
+            const email = document.getElementById('regEmail').value;
+
+            try {
+                const response = await fetch(`${API_URL}/player/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ walletAddress: wallet, username, email })
+                });
+
+                const data = await response.json();
+                showResult('registerResult', data, response.ok);
+            } catch (error) {
+                showResult('registerResult', { error: error.message }, false);
+            }
+        }
+
+        // Get Player
+        async function getPlayer() {
+            const wallet = document.getElementById('getWallet').value;
+
+            try {
+                const response = await fetch(`${API_URL}/player/${wallet}`);
+                const data = await response.json();
+                showResult('profileResult', data, response.ok);
+            } catch (error) {
+                showResult('profileResult', { error: error.message }, false);
+            }
+        }
+
+        // Add Experience
+        async function addExperience() {
+            const wallet = document.getElementById('expWallet').value;
+            const amount = parseInt(document.getElementById('expAmount').value);
+
+            try {
+                const response = await fetch(`${API_URL}/player/${wallet}/experience`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ amount })
+                });
+
+                const data = await response.json();
+                showResult('expResult', data, response.ok);
+            } catch (error) {
+                showResult('expResult', { error: error.message }, false);
+            }
+        }
+
+        // Unlock Island
+        async function unlockIsland() {
+            const wallet = document.getElementById('islandWallet').value;
+            const island = document.getElementById('islandSelect').value;
+
+            try {
+                const response = await fetch(`${API_URL}/player/${wallet}/unlock-island`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ island })
+                });
+
+                const data = await response.json();
+                showResult('islandResult', data, response.ok);
+            } catch (error) {
+                showResult('islandResult', { error: error.message }, false);
+            }
+        }
+
+        // Get Missions
+        async function getMissions() {
+            const island = document.getElementById('missionIsland').value;
+            const url = island ? `${API_URL}/missions?island=${island}` : `${API_URL}/missions`;
+
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                showResult('missionsResult', data, response.ok);
+            } catch (error) {
+                showResult('missionsResult', { error: error.message }, false);
+            }
+        }
+
+        // Get Available Missions
+        async function getAvailableMissions() {
+            const wallet = document.getElementById('availWallet').value;
+
+            try {
+                const response = await fetch(`${API_URL}/missions/available/${wallet}`);
+                const data = await response.json();
+                showResult('availResult', data, response.ok);
+            } catch (error) {
+                showResult('availResult', { error: error.message }, false);
+            }
+        }
+
+        // Get Leaderboard
+        async function getLeaderboard() {
+            const type = document.getElementById('leaderType').value;
+
+            try {
+                const response = await fetch(`${API_URL}/player/leaderboard/${type}`);
+                const data = await response.json();
+                showResult('leaderResult', data, response.ok);
+            } catch (error) {
+                showResult('leaderResult', { error: error.message }, false);
+            }
+        }
+
+        // Show Result
+        function showResult(elementId, data, success) {
+            const element = document.getElementById(elementId);
+            element.style.display = 'block';
+            element.className = success ? 'result success' : 'result error';
+            element.innerHTML = `<strong>${success ? 'Success!' : 'Error'}</strong><pre>${JSON.stringify(data, null, 2)}</pre>`;
+        }
+
+        // Update API URL display
+        document.getElementById('apiUrl').textContent = API_URL.replace('/api', '');
+    </script>
+</body>
+</html>
