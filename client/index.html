@@ -1233,8 +1233,13 @@
                         channel: 'voice',
                         customerData: {
                             name: localStorage.getItem('customerName') || '',
-                            phone: localStorage.getItem('customerPhone') || ''
-                        }
+                            phone: localStorage.getItem('customerPhone') || '',
+                            email: localStorage.getItem('customerEmail') || ''
+                        },
+                        // Callback URL for when VAPI completes booking data collection
+                        completionWebhook: `${WEBHOOK_BASE}/vapi-booking`,
+                        // Flag to ensure staff scheduling is triggered
+                        enableStaffScheduling: true
                     })
                 });
 
@@ -1261,6 +1266,61 @@
                 modal.remove();
             }
         }
+
+        // Handle VAPI booking completion - sends complete booking data for staff scheduling
+        async function handleVapiBookingComplete(bookingData) {
+            console.log('Processing VAPI booking completion:', bookingData);
+
+            try {
+                // Send complete booking data to n8n workflow for staff scheduling
+                const response = await fetch(`${WEBHOOK_BASE}/vapi-booking`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        action: 'complete',
+                        bookingData: {
+                            service: bookingData.service,
+                            name: bookingData.name || localStorage.getItem('customerName') || '',
+                            phone: bookingData.phone || localStorage.getItem('customerPhone') || '',
+                            email: bookingData.email || localStorage.getItem('customerEmail') || '',
+                            address: bookingData.address,
+                            date: bookingData.date,
+                            time: bookingData.time,
+                            notes: bookingData.notes || '',
+                            channel: 'voice',
+                            requiresStaffScheduling: true,
+                            token: localStorage.getItem('userToken') || null
+                        }
+                    })
+                });
+
+                const data = await response.json();
+
+                if (data.success || response.ok) {
+                    console.log('VAPI booking completed successfully, staff scheduling triggered');
+
+                    // Show success notification
+                    alert('Booking completed successfully! We will assign a staff member and contact you soon.');
+
+                    // Refresh bookings if user is logged in
+                    if (isLoggedIn) {
+                        switchTab('bookings');
+                        loadBookings();
+                    }
+                } else {
+                    console.error('VAPI booking completion failed:', data);
+                    alert(data.message || 'Booking processing failed. Please contact us directly.');
+                }
+            } catch (error) {
+                console.error('Error completing VAPI booking:', error);
+                alert('Unable to process booking. Please call us at (825) 255-5296.');
+            }
+        }
+
+        // Expose function globally for VAPI webhook callbacks
+        window.handleVapiBookingComplete = handleVapiBookingComplete;
 
         function closeCallModal() {
             const modal = document.getElementById('callModal');
